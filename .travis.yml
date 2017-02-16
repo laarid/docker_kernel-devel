@@ -1,0 +1,56 @@
+dist: trusty
+sudo: required
+services:
+- docker
+
+env:
+  matrix:
+  - SUITE=jessie ARCH=amd64
+  - SUITE=jessie ARCH=arm64
+  - SUITE=jessie ARCH=armel
+  - SUITE=jessie ARCH=armhf
+  - SUITE=jessie ARCH=i386
+  - SUITE=jessie ARCH=mips
+  - SUITE=jessie ARCH=mipsel
+  - SUITE=jessie ARCH=powerpc
+  - SUITE=jessie ARCH=ppc64el
+  - SUITE=jessie ARCH=s390x
+  - SUITE=sid ARCH=amd64
+  - SUITE=sid ARCH=arm64
+  - SUITE=sid ARCH=armel
+  - SUITE=sid ARCH=armhf
+  - SUITE=sid ARCH=i386
+  - SUITE=sid ARCH=mips
+  - SUITE=sid ARCH=mips64el
+  - SUITE=sid ARCH=mipsel
+  - SUITE=sid ARCH=powerpc
+  - SUITE=sid ARCH=ppc64el
+  - SUITE=sid ARCH=s390x
+  global:
+  - secure: "kKJBcJiXOYSwKrSGFj0OVf43KTjXm259TCB8aA9q9SqN/LHy6YfQ+XEKQ3UWqVRSMNUtR46Z+KzIRoWIrx9VIMK5xXu7TVJ+Vw6Vpx1nrV+CGGtsV0ond5zut8eCqDubXBs2hK1LJwJoazeyVR2SGrCSxd4zAUSDEtFA/YduQq6WnHgsKlUUQQ8CGpnxm8ygl6s7QoA8QztbvkQNeb+m937kQ65BG/Wv/8RDbcXUa6PsB/1J+J1cLUuNarTvjYpNI42jKHvBgwnx2HdgbkcO87ucibBbm/BnZh3YdC8qEFsZLsNU0iY1kRseNHOd2wi4fVZcN0WGDFWRrgBIZ43FExbG9+LWi41XPKskf2157bp5Jx+ci4L/9s85xMeOqjR5eAH7J1f488JCMoqOdCAE5ZlEsmNIEXhIdgcsTuS6c8HyRdHmx5siWiN3oMAinFoE+GO+6jQ4pYiEGwK3t1wsZ3u1/ymw1xZJCHN7AhVf/WcY04vNphYKsgfq7ArLFxBXb1seSrPDhOa58wl8eV5u3l/Scqcxld+UWzHCA4OolJt0D/1JbI8g3X67n9Z/EQrLFdxMJ62/mjeZn/usRG/CVFt2U5EjB9OvlQNnYjtGRgjrVL/htbGe6ECWWAVz0VdhHy42YDkFTduwvpaBziJjlPL9btI+fyIhYVK8Hakw0o0="
+
+branches:
+  only: master
+
+addons:
+  apt:
+    sources:
+    - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ devel universe'
+    packages:
+    - binfmt-support
+    - qemu-user-static
+
+script:
+- docker build -t ${TRAVIS_REPO_SLUG%/*}/${TRAVIS_REPO_SLUG#*_}:$SUITE-$ARCH $SUITE/$ARCH
+- docker images
+
+after_success:
+- if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+    docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}";
+    docker push ${TRAVIS_REPO_SLUG%/*}/${TRAVIS_REPO_SLUG#*_}:$SUITE-$ARCH;
+  fi
+
+notifications:
+  slack:
+    rooms:
+    - secure: "UaKNxJKxDWKjBfh3SMnoUtVAVWALMyDAYNfs+8g4m6BFy/dKHA9R2/g0iaH5gJ4ax/feBL1ljoLNOX7/lOS2Mu8bZLVKZCltrLP5tGL1ZNvFFWqeswWpMHHT60HcbL3iFpo/Cx3r8me36vJvYx1fN7cpfvkGbdT6mHqHm6qbwNCtr5i0ltU4D4L1k85U6m9Z3suc67iPjQ+7XzYcPae74RAO57ld7HXIzr+b7fdHShZqOwFW7gEpyIp7hlJ0OTNo2A8RrkJ610cGzpzzf0BIF4UjD7/IELc1D45ToII/qR1CrQ3EzAEj6TbtJqo8RTX88bOouOkBYo52PWPGaXE34NetQ1GUj0DMT9lu85rrUc4g3IxjGn8rlGoMTo0H/LRHmgVeCvBIZj6lihJ16M9KOK3IbPPjhNEjptP8Lwiokn4pNTysZdPp1gDwA/QCZT0JArKNqEDZZAMx4CbDvCtPThqgwVUR/WyM0iNZRkxSnZ4GuM8OUT3NEU8nv4NTp+bnbEOmANHGcoLLOu4gJELZhlry+hVatF+8n7rjzXJZ7Eqp6r94itO7gPYid5k6LPq4gtGRQwJKwc/+1BdOjTv9tF0Iy08AZERIPYSfHgPqCJqrLKJ5E8SDxqhRSiCIoPOuWT4d4GkfPCRztLDcmGyZ9BSkKPe0IR62CEQGtMLn/Gw="
