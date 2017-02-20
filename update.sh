@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # set -x
-SUITES="jessie sid"
+SUITES="sid"
 
 for f in $(find ${SUITES} -type f -name Dockerfile); do
   [ -n "$(head -n 1 $f | grep '^#.*GENERATED ')" ] || continue;

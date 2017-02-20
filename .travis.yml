@@ -5,16 +5,6 @@ services:
 
 env:
   matrix:
-  - SUITE=jessie ARCH=amd64
-  - SUITE=jessie ARCH=arm64
-  - SUITE=jessie ARCH=armel
-  - SUITE=jessie ARCH=armhf
-  - SUITE=jessie ARCH=i386
-  - SUITE=jessie ARCH=mips
-  - SUITE=jessie ARCH=mipsel
-  - SUITE=jessie ARCH=powerpc
-  - SUITE=jessie ARCH=ppc64el
-  - SUITE=jessie ARCH=s390x
   - SUITE=sid ARCH=amd64
   - SUITE=sid ARCH=arm64
   - SUITE=sid ARCH=armel

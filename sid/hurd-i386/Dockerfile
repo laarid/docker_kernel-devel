@@ -1,18 +1,8 @@
 # GENERATED from Dockerfile.template. DO NOT EDIT.
-FROM vicamo/buildpack-deps:sid-hurd-i386
+FROM vicamo/debian-linux-kernel-cross:sid-hurd-i386
 
 ENV LAARID_USER=laarid
 ENV LAARID_HOME=/home/${LAARID_USER}
-
-RUN echo "$(cat /etc/apt/sources.list | sed 's,^deb ,deb-src ,')" >> /etc/apt/sources.list \
-	&& apt-get update -qq \
-	&& apt-get upgrade -y \
-	&& apt-get install --no-install-recommends -y \
-		build-essential \
-		fakeroot \
-		\
-		sudo \
-	&& apt-get build-dep -y linux
 
 RUN useradd --comment 'LAARiD Development Account' \
 		--home ${LAARID_HOME} --create-home \
