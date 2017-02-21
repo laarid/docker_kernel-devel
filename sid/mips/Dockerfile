@@ -1,6 +1,12 @@
 # GENERATED from Dockerfile.template. DO NOT EDIT.
 FROM vicamo/debian-linux-kernel-cross:sid-mips
 
+RUN echo "deb [allow-insecure=yes] http://dl.bintray.com/laarid/main stretch main" | \
+		tee /etc/apt/sources.list.d/bintray.list; \
+	(echo "Package: *"; echo "Pin: origin \"dl.bintray.com\""; echo "Pin-Priority: 1000") | \
+		tee /etc/apt/preferences.d/bintray.pref; \
+	apt-get update -qq
+
 ENV LAARID_USER=laarid
 ENV LAARID_HOME=/home/${LAARID_USER}
 
