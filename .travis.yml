@@ -1,4 +1,3 @@
-dist: trusty
 sudo: required
 services:
 - docker
@@ -19,16 +18,9 @@ env:
   global:
   - secure: "kKJBcJiXOYSwKrSGFj0OVf43KTjXm259TCB8aA9q9SqN/LHy6YfQ+XEKQ3UWqVRSMNUtR46Z+KzIRoWIrx9VIMK5xXu7TVJ+Vw6Vpx1nrV+CGGtsV0ond5zut8eCqDubXBs2hK1LJwJoazeyVR2SGrCSxd4zAUSDEtFA/YduQq6WnHgsKlUUQQ8CGpnxm8ygl6s7QoA8QztbvkQNeb+m937kQ65BG/Wv/8RDbcXUa6PsB/1J+J1cLUuNarTvjYpNI42jKHvBgwnx2HdgbkcO87ucibBbm/BnZh3YdC8qEFsZLsNU0iY1kRseNHOd2wi4fVZcN0WGDFWRrgBIZ43FExbG9+LWi41XPKskf2157bp5Jx+ci4L/9s85xMeOqjR5eAH7J1f488JCMoqOdCAE5ZlEsmNIEXhIdgcsTuS6c8HyRdHmx5siWiN3oMAinFoE+GO+6jQ4pYiEGwK3t1wsZ3u1/ymw1xZJCHN7AhVf/WcY04vNphYKsgfq7ArLFxBXb1seSrPDhOa58wl8eV5u3l/Scqcxld+UWzHCA4OolJt0D/1JbI8g3X67n9Z/EQrLFdxMJ62/mjeZn/usRG/CVFt2U5EjB9OvlQNnYjtGRgjrVL/htbGe6ECWWAVz0VdhHy42YDkFTduwvpaBziJjlPL9btI+fyIhYVK8Hakw0o0="
 
-branches:
-  only: master
-
-addons:
-  apt:
-    sources:
-    - sourceline: 'deb http://archive.ubuntu.com/ubuntu/ devel universe'
-    packages:
-    - binfmt-support
-    - qemu-user-static
+before_script:
+- docker run --rm --privileged vicamo/binfmt-qemu:latest
+- cat /proc/sys/fs/binfmt_misc/qemu-*
 
 script:
 - docker build -t ${TRAVIS_REPO_SLUG%/*}/${TRAVIS_REPO_SLUG#*_}:$SUITE-$ARCH $SUITE/$ARCH
